@@ -9,8 +9,8 @@
 #include "classifier.hpp"
 
 Classifier::Classifier(){
-    p0=0.0;
-    p1=0.0;
+    p[0]=0.0;
+    p[1]=0.0;
     counts[0]=0;
     counts[1]=0;
 }
@@ -40,12 +40,15 @@ vector<pair<int, int>> Classifier::readTestFile(string path){
     return r;
 }
 
+int Classifier::findNext(int i, double *arr){
+    for (; i<250; i++){
+        if (arr[i] > 10e-8) return i;
+    }
+    return 0;
+}
+
 double Classifier::probability(int h, int w, int label){
-    double p;
-    if (label==0) p=p0;
-    else p=p1;
-    return (pWeight[label][w-2] + pWeight[label][w-1] + pWeight[label][w] + pWeight[label][w+1] + pWeight[label][w+2]) * (pHeight[label][h-2] + pHeight[label][h-1] + pHeight[label][h] + pHeight[label][h+1] + pHeight[label][h+2]) * p;
-    
+    return pWeight[label][w]*pHeight[label][h]*p[label];
 }
 
 void Classifier::train(string path){
@@ -65,14 +68,39 @@ void Classifier::train(vector<d>input){
         weight[input[i].label][input[i].weight]++;
     }
     
-    p0 = double(counts[0])/double(input.size());
-    p1 = double(counts[1])/double(input.size());
+    p[0] = double(counts[0])/double(input.size());
+    p[1] = double(counts[1])/double(input.size());
     
 
     for (int i=0; i<2; i++)
         for (int j=0; j<250; j++){
             pWeight[i][j] = double(weight[i][j])/double(counts[i]);
             pHeight[i][j] = double(heihgt[i][j])/double(counts[i]);
+        }
+    pWeight[0][0]=10e-7;
+    pWeight[1][0]=10e-7;
+    pWeight[0][249]=10e-7;
+    pWeight[1][249]=10e-7;
+    pHeight[0][0]=10e-7;
+    pHeight[1][0]=10e-7;
+    pHeight[0][249]=10e-7;
+    pHeight[1][249]=10e-7;
+    int c=0;
+    for (int i=0; i<2; i++)
+        for (int j=0; j<250; j++){
+            if (j==71){
+                j=j;
+            }
+            if (pWeight[i][j] < 10e-8){
+                c = findNext(j, pWeight[i]);
+                for (int k=j; k<c; k++)
+                    pWeight[i][k] = pWeight[i][j-1] + (k-j+1)*(pWeight[i][c] - pWeight[i][j-1])/(c-j+1);
+            }
+            if (pHeight[i][j] < 10e-8){
+                c = findNext(j, pHeight[i]);
+                for (int k=j; k<c; k++)
+                    pHeight[i][k] = pHeight[i][j-1] + (k-j+1)*(pHeight[i][c] - pHeight[i][j-1])/(c-j+1);
+            }
         }
 }
 
