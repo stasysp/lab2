@@ -14,40 +14,20 @@ using namespace std;
 int main() {
     Classifier my;
     
-    vector<pair<double, double>> myTest;
-    myTest.push_back(make_pair(190, 90));
-    myTest.push_back(make_pair(185, 86));
-    myTest.push_back(make_pair(165, 46));
-    myTest.push_back(make_pair(164, 49));
-    myTest.push_back(make_pair(179, 76));
-    myTest.push_back(make_pair(155, 42));
+    ifstream F, F1;
+    ofstream A;
+    F.open("/Users/anastasiapopova/Desktop/YANDEX/lab2_Bayes/lab2/train_set.txt");
+    F1.open("/Users/anastasiapopova/Desktop/YANDEX/lab2_Bayes/lab2/test_set.txt");
     
-    vector<d>test1;
-    
-    ifstream F;
-    F.open("/Users/anastasiapopova/Desktop/YANDEX/lab2_Bayes/lab2/train_test_set");
-    
-    my.train(F, barChart);
-    vector<int>ans = my.classify(myTest);
+    A.open("/Users/anastasiapopova/Desktop/YANDEX/lab2_Bayes/lab2/new");
+    my.train(F, parzanRozenblatt2);
+    cout<<"train"<<endl;
+    vector<int>ans = my.classify(F1);
+    cout<<"classify"<<endl;
     for (int i=0; i<ans.size(); i++){
-        cout<<ans[i]<<" ";
+            A<<ans[i]<<endl;
     }
-    cout<<endl;
-    
-    my.train(F, normalDistribution);
-    ans = my.classify(myTest);
-    for (int i=0; i<ans.size(); i++){
-        cout<<ans[i]<<" ";
-    }
-    cout<<endl;
-    
-    my.train(F, parzanRozenblatt);
-    ans = my.classify(myTest);
-    
-    for (int i=0; i<ans.size(); i++){
-        cout<<ans[i]<<" ";
-    }
-    cout<<endl;
-    
+    A.close();
+  
     return 0;
 }

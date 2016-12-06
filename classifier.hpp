@@ -24,8 +24,9 @@ private:
     double p[2];
     double pWeight[2][250], pHeight[2][250];
     int counts[2];
-    double ExW[2], DxW[2], ExH[2], DxH[2]; //матожидание&дисперсия
+    double ExW[2], DxW[2], ExH[2], DxH[2];//матожидание&дисперсия
     double H; //коэфф сглаживания
+    int k;//knn
     vector<d>train_set;
     
     void readTrainFile(ifstream &F);
@@ -35,7 +36,10 @@ private:
 public:
     Classifier();
     ~Classifier();
+    Classifier(const Classifier &A);
     friend Classifier barChart(Classifier A);
+    friend Classifier KNN(Classifier A);
+    friend Classifier parzanRozenblatt2(Classifier A);
     friend Classifier normalDistribution (Classifier A);
     friend Classifier parzanRozenblatt (Classifier A);
     void train(ifstream &F, Classifier (*f)(Classifier A));
@@ -46,5 +50,7 @@ public:
 Classifier barChart(Classifier A);
 Classifier normalDistribution (Classifier A);
 Classifier parzanRozenblatt (Classifier A);
+Classifier KNN(Classifier A);
+Classifier parzanRozenblatt2(Classifier A);
 
 #endif /* classifier_hpp */
